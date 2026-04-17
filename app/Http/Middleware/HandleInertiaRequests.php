@@ -34,6 +34,13 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
+            ],
+            'cartItemCount' => fn () => $request->user()
+                ? ($request->user()->activeCart?->cartItems()->sum('quantity') ?? 0)
+                : 0,
         ];
     }
 }
