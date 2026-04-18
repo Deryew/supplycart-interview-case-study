@@ -1,5 +1,5 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
 import ProductGrid from '@/Components/Products/ProductGrid.vue';
 import ProductFilter from '@/Components/Products/ProductFilter.vue';
 import Pagination from '@/Components/Shared/Pagination.vue';
@@ -20,7 +20,7 @@ const flash = usePage().props.flash;
 <template>
     <Head title="Products" />
 
-    <AuthenticatedLayout>
+    <AppLayout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Products
@@ -55,5 +55,5 @@ const flash = usePage().props.flash;
                 </div>
             </div>
         </div>
-    </AuthenticatedLayout>
+    </AppLayout>
 </template>

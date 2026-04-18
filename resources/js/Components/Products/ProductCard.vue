@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import { router, usePage } from '@inertiajs/vue3';
 import { useCartStore } from '@/stores/cart';
 import PriceDisplay from '@/Components/Shared/PriceDisplay.vue';
 import Badge from '@/Components/Shared/Badge.vue';
@@ -8,11 +9,16 @@ const props = defineProps({
     product: { type: Object, required: true },
 });
 
+const page = usePage();
 const cart = useCartStore();
 const quantity = ref(1);
 const adding = ref(false);
 
 function addToCart() {
+    if (!page.props.auth?.user) {
+        router.visit(route('login'));
+        return;
+    }
     adding.value = true;
     cart.addItem(props.product.id, quantity.value);
     setTimeout(() => {

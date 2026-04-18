@@ -28,6 +28,7 @@ class ProductController extends Controller
             'brands' => Brand::orderBy('name')->get(['id', 'name']),
             'categories' => Category::orderBy('name')->get(['id', 'name']),
             'filters' => $request->only(['brand_id', 'category_id', 'search']),
+            'isGuest' => !$request->user(),
         ]);
     }
 }

@@ -9,17 +9,24 @@ use Illuminate\Support\Facades\DB;
 
 class ProductService
 {
-    public function getProductsForUser(User $user, array $filters = [], int $perPage = 12): LengthAwarePaginator
+    public function getProductsForUser(?User $user, array $filters = [], int $perPage = 12): LengthAwarePaginator
     {
-        return Product::query()
+        $query = Product::query()
             ->with(['brand', 'category'])
             ->select('products.*')
-            ->leftJoin('user_prices', function ($join) use ($user) {
+            ->where('products.is_active', true);
+
+        if ($user) {
+            $query->leftJoin('user_prices', function ($join) use ($user) {
                 $join->on('products.id', '=', 'user_prices.product_id')
                     ->where('user_prices.user_id', '=', $user->id);
             })
-            ->addSelect(DB::raw('COALESCE(user_prices.price, products.price) as effective_price'))
-            ->where('products.is_active', true)
+            ->addSelect(DB::raw('COALESCE(user_prices.price, products.price) as effective_price'));
+        } else {
+            $query->addSelect(DB::raw('products.price as effective_price'));
+        }
+
+        return $query
             ->when($filters['brand_id'] ?? null, fn ($q, $brandId) => $q->where('products.brand_id', $brandId))
             ->when($filters['category_id'] ?? null, fn ($q, $categoryId) => $q->where('products.category_id', $categoryId))
             ->when($filters['search'] ?? null, fn ($q, $search) => $q->where('products.name', 'like', "%{$search}%"))

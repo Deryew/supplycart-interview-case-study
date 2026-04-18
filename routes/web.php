@@ -8,29 +8,21 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+Route::get('/', fn () => redirect()->route('products.index'));
 
+// Products - publicly accessible
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+
+Route::get('/dashboard', fn () => redirect()->route('products.index'))->middleware(['auth', 'verified'])->name('dashboard');
+
+// Cart & Orders - require authentication
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', fn () => redirect()->route('products.index'))->name('dashboard');
-
-    // Products
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-
-    // Cart
     Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
     Route::post('/cart/items', [CartController::class, 'addItem'])->name('cart.addItem');
     Route::patch('/cart/items/{cartItem}', [CartController::class, 'updateItem'])->name('cart.updateItem');
     Route::delete('/cart/items/{cartItem}', [CartController::class, 'removeItem'])->name('cart.removeItem');
     Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
 
-    // Orders
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
