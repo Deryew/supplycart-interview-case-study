@@ -22,7 +22,9 @@ class CartController extends Controller
         $cart = $this->cartService->getCartWithItems(auth()->user());
 
         return Inertia::render('Cart/Show', [
-            'cart' => $cart ? new CartResource($cart) : null,
+            'cart' => $cart && $cart->cartItems->isNotEmpty()
+                ? (new CartResource($cart))->resolve()
+                : null,
         ]);
     }
 

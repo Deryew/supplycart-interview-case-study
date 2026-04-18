@@ -25,7 +25,7 @@ class OrderController extends Controller
             ->paginate(15);
 
         return Inertia::render('Orders/Index', [
-            'orders' => OrderResource::collection($orders),
+            'orders' => $orders->through(fn ($order) => (new OrderResource($order))->resolve()),
         ]);
     }
 
@@ -36,7 +36,7 @@ class OrderController extends Controller
         $order->load('orderItems');
 
         return Inertia::render('Orders/Show', [
-            'order' => new OrderResource($order),
+            'order' => (new OrderResource($order))->resolve(),
         ]);
     }
 
