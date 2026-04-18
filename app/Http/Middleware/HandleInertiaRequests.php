@@ -39,7 +39,10 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn () => $request->session()->get('error'),
             ],
             'cartItemCount' => fn () => $request->user()
-                ? ($request->user()->activeCart?->cartItems()->sum('quantity') ?? 0)
+                ? \App\Models\CartItem::whereHas('cart', fn ($q) => $q
+                    ->where('user_id', $request->user()->id)
+                    ->where('is_active', true)
+                )->sum('quantity')
                 : 0,
         ];
     }
