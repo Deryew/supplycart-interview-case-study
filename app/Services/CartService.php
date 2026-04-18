@@ -5,8 +5,10 @@ namespace App\Services;
 use App\Events\ProductAddedToCart;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class CartService
 {
@@ -29,6 +31,20 @@ class CartService
     public function addItem(User $user, int $productId, int $quantity = 1): CartItem
     {
         return DB::transaction(function () use ($user, $productId, $quantity) {
+            $product = Product::find($productId);
+
+            if (!$product || !$product->is_active) {
+                throw ValidationException::withMessages([
+                    'product_id' => 'This product is not available.',
+                ]);
+            }
+
+            if ($product->stock < $quantity) {
+                throw ValidationException::withMessages([
+                    'quantity' => "Only {$product->stock} items available in stock.",
+                ]);
+            }
+
             $cart = $this->getOrCreateActiveCart($user);
 
             $cartItem = $cart->cartItems()->where('product_id', $productId)->first();

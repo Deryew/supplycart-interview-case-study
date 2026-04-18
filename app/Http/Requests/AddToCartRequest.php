@@ -15,7 +15,16 @@ class AddToCartRequest extends FormRequest
     {
         return [
             'product_id' => ['required', 'exists:products,id'],
-            'quantity' => ['required', 'integer', 'min:1'],
+            'quantity' => ['required', 'integer', 'min:1', 'max:99'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'product_id.exists' => 'The selected product does not exist.',
+            'quantity.min' => 'Quantity must be at least 1.',
+            'quantity.max' => 'Quantity cannot exceed 99.',
         ];
     }
 }
