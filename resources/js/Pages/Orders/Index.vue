@@ -49,7 +49,7 @@ const flash = usePage().props.flash;
                 </EmptyState>
 
                 <div class="mt-8">
-                    <Pagination :links="orders.meta.links" />
+                    <Pagination :links="orders.links" />
                 </div>
             </div>
         </div>
