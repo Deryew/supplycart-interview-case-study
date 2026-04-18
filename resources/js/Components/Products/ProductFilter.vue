@@ -10,8 +10,8 @@ const props = defineProps({
 });
 
 const search = ref(props.filters.search || '');
-const brandId = ref(props.filters.brand_id || '');
-const categoryId = ref(props.filters.category_id || '');
+const brandId = ref(props.filters.brand_id ? String(props.filters.brand_id) : '');
+const categoryId = ref(props.filters.category_id ? String(props.filters.category_id) : '');
 
 function applyFilters() {
     router.get(route('products.index'), {
@@ -20,6 +20,7 @@ function applyFilters() {
         category_id: categoryId.value || undefined,
     }, {
         preserveState: true,
+        preserveScroll: true,
         replace: true,
     });
 }
@@ -27,8 +28,8 @@ function applyFilters() {
 const debouncedSearch = useDebounceFn(applyFilters, 300);
 
 watch(search, debouncedSearch);
-watch(brandId, applyFilters);
-watch(categoryId, applyFilters);
+watch(brandId, () => applyFilters());
+watch(categoryId, () => applyFilters());
 
 function clearFilters() {
     search.value = '';

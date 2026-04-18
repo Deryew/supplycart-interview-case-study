@@ -22,11 +22,18 @@ class ProductListTest extends TestCase
         $this->user = User::factory()->create(['email_verified_at' => now()]);
     }
 
-    public function test_guests_cannot_view_products(): void
+    public function test_guests_can_browse_products(): void
     {
+        Product::factory()->count(3)->create();
+
         $response = $this->get('/products');
 
-        $response->assertRedirect('/login');
+        $response->assertStatus(200);
+        $response->assertInertia(fn ($page) => $page
+            ->component('Products/Index')
+            ->has('products.data', 3)
+            ->where('isGuest', true)
+        );
     }
 
     public function test_authenticated_user_can_view_products(): void
