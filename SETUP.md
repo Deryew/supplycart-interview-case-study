@@ -26,6 +26,22 @@ To enable Stripe Checkout, pass your test keys when starting:
 STRIPE_KEY=pk_test_... STRIPE_SECRET=sk_test_... docker compose up --build -d
 ```
 
+#### Webhook (Local Testing)
+
+The webhook endpoint at `POST /stripe/webhook` is fully implemented — it verifies the Stripe signature and marks orders as paid on `checkout.session.completed` events.
+
+Since Stripe cannot reach localhost directly, use the [Stripe CLI](https://stripe.com/docs/stripe-cli) to forward webhook events:
+
+```bash
+stripe listen --forward-to localhost:8080/stripe/webhook
+```
+
+Copy the webhook signing secret from the output and set it:
+
+```bash
+STRIPE_WEBHOOK_SECRET=whsec_... docker compose up --build -d
+```
+
 ### Useful Commands
 
 ```bash
@@ -100,6 +116,18 @@ STRIPE_SECRET=sk_test_...
 ```
 
 Use test card `4242 4242 4242 4242` with any future expiry and CVC.
+
+To receive webhook events locally, run in a separate terminal:
+
+```bash
+stripe listen --forward-to localhost:8000/stripe/webhook
+```
+
+Then add the signing secret to `.env`:
+
+```
+STRIPE_WEBHOOK_SECRET=whsec_...
+```
 
 ### Running Tests
 
