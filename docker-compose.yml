@@ -1,0 +1,29 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      APP_NAME: "SupplyCart"
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: "http://localhost:8080"
+      APP_KEY: "${APP_KEY:-}"
+      DB_CONNECTION: sqlite
+      SESSION_DRIVER: database
+      QUEUE_CONNECTION: database
+      CACHE_STORE: database
+      LOG_CHANNEL: stderr
+      STRIPE_KEY: "${STRIPE_KEY:-}"
+      STRIPE_SECRET: "${STRIPE_SECRET:-}"
+      STRIPE_WEBHOOK_SECRET: "${STRIPE_WEBHOOK_SECRET:-}"
+    volumes:
+      - sqlite_data:/var/www/html/database
+      - storage_logs:/var/www/html/storage/logs
+    restart: unless-stopped
+
+volumes:
+  sqlite_data:
+  storage_logs:
