@@ -4,6 +4,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StripeWebhookController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,6 +27,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{order}/pay', [OrderController::class, 'retryPayment'])->name('orders.pay');
+    Route::get('/checkout/{order}/success', [OrderController::class, 'checkoutSuccess'])->name('checkout.success');
+    Route::get('/checkout/{order}/cancel', [OrderController::class, 'checkoutCancel'])->name('checkout.cancel');
 });
 
 Route::middleware('auth')->group(function () {
@@ -33,5 +37,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// Stripe webhook (excluded from CSRF via bootstrap/app.php)
+Route::post('/stripe/webhook', StripeWebhookController::class)->name('stripe.webhook');
 
 require __DIR__.'/auth.php';

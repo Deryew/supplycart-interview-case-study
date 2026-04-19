@@ -7,7 +7,9 @@ use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\UserPrice;
+use App\Services\OrderService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mockery;
 use Tests\TestCase;
 
 class PlaceOrderTest extends TestCase
@@ -20,6 +22,16 @@ class PlaceOrderTest extends TestCase
     {
         parent::setUp();
         $this->user = User::factory()->create(['email_verified_at' => now()]);
+
+        // Mock the Stripe checkout session creation so tests don't call Stripe API
+        $mockSession = Mockery::mock();
+        $mockSession->id = 'cs_test_fake_session_id';
+        $mockSession->url = '/orders';
+
+        $realService = app(OrderService::class);
+        $spy = Mockery::mock($realService)->makePartial();
+        $spy->shouldReceive('createCheckoutSession')->andReturn($mockSession);
+        $this->app->instance(OrderService::class, $spy);
     }
 
     private function createCartWithItems(array $items = []): Cart

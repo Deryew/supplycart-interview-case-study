@@ -3,7 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import OrderItemRow from '@/Components/Orders/OrderItemRow.vue';
 import Badge from '@/Components/Shared/Badge.vue';
 import AlertMessage from '@/Components/Shared/AlertMessage.vue';
-import { Head, Link, usePage } from '@inertiajs/vue3';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 
 defineProps({
     order: Object,
@@ -20,6 +20,16 @@ const statusVariant = (status) => {
     };
     return map[status] || 'gray';
 };
+
+const paymentVariant = (status) => {
+    const map = {
+        paid: 'success',
+        unpaid: 'warning',
+    };
+    return map[status] || 'gray';
+};
+
+const payForm = useForm({});
 </script>
 
 <template>
@@ -43,6 +53,7 @@ const statusVariant = (status) => {
         <div class="py-8">
             <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
                 <AlertMessage :message="flash?.success" type="success" class="mb-6" />
+                <AlertMessage :message="flash?.error" type="error" class="mb-6" />
 
                 <div class="rounded-xl border border-gray-200 bg-white">
                     <!-- Order info -->
@@ -56,6 +67,19 @@ const statusVariant = (status) => {
                                 <span class="text-gray-500">Total</span>
                                 <p class="font-medium text-gray-900">{{ order.formattedTotal }}</p>
                             </div>
+                            <div>
+                                <span class="text-gray-500">Payment</span>
+                                <Badge :value="order.paymentStatus" :variant="paymentVariant(order.paymentStatus)" />
+                            </div>
+                        </div>
+                        <div v-if="order.paymentStatus === 'unpaid'" class="mt-4">
+                            <button
+                                @click="payForm.post(route('orders.pay', order.id))"
+                                :disabled="payForm.processing"
+                                class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+                            >
+                                {{ payForm.processing ? 'Redirecting...' : 'Pay Now' }}
+                            </button>
                         </div>
                         <div v-if="order.notes" class="mt-4 text-sm">
                             <span class="text-gray-500">Notes</span>

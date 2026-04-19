@@ -16,11 +16,15 @@ class Order extends Model
         'order_number',
         'total_amount',
         'status',
+        'payment_status',
+        'stripe_checkout_session_id',
+        'paid_at',
         'notes',
     ];
 
     protected $casts = [
         'total_amount' => 'integer',
+        'paid_at' => 'datetime',
     ];
 
     protected static function booted(): void

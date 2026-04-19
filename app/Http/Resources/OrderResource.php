@@ -15,6 +15,8 @@ class OrderResource extends JsonResource
             'totalAmount' => $this->total_amount,
             'formattedTotal' => 'RM ' . number_format($this->total_amount / 100, 2),
             'status' => $this->status,
+            'paymentStatus' => $this->payment_status,
+            'paidAt' => $this->paid_at?->toISOString(),
             'notes' => $this->notes,
             'items' => $this->relationLoaded('orderItems')
                 ? $this->orderItems->map(fn ($item) => [

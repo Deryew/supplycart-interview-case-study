@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Models\UserPrice;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Stripe\Checkout\Session as StripeSession;
+use Stripe\Stripe;
 
 class OrderService
 {
@@ -78,6 +80,47 @@ class OrderService
 
             return $order;
         });
+    }
+
+    public function createCheckoutSession(Order $order)
+    {
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        $lineItems = $order->orderItems->map(fn ($item) => [
+            'price_data' => [
+                'currency' => 'myr',
+                'product_data' => [
+                    'name' => $item->product_name,
+                ],
+                'unit_amount' => $item->unit_price,
+            ],
+            'quantity' => $item->quantity,
+        ])->toArray();
+
+        $session = StripeSession::create([
+            'payment_method_types' => ['card'],
+            'line_items' => $lineItems,
+            'mode' => 'payment',
+            'success_url' => route('checkout.success', $order) . '?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' => route('checkout.cancel', $order),
+            'metadata' => [
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+            ],
+        ]);
+
+        $order->update(['stripe_checkout_session_id' => $session->id]);
+
+        return $session;
+    }
+
+    public function markAsPaid(Order $order): void
+    {
+        $order->update([
+            'payment_status' => 'paid',
+            'status' => 'processing',
+            'paid_at' => now(),
+        ]);
     }
 
     private function resolvePrice(User $user, $product): int

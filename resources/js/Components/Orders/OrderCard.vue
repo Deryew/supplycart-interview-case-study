@@ -15,6 +15,14 @@ const statusVariant = (status) => {
     };
     return map[status] || 'gray';
 };
+
+const paymentVariant = (status) => {
+    const map = {
+        paid: 'success',
+        unpaid: 'warning',
+    };
+    return map[status] || 'gray';
+};
 </script>
 
 <template>
@@ -24,7 +32,10 @@ const statusVariant = (status) => {
     >
         <div class="flex items-center justify-between mb-3">
             <span class="text-sm font-semibold text-gray-900">{{ order.orderNumber }}</span>
-            <Badge :value="order.status" :variant="statusVariant(order.status)" />
+            <div class="flex gap-1">
+                <Badge :value="order.paymentStatus" :variant="paymentVariant(order.paymentStatus)" />
+                <Badge :value="order.status" :variant="statusVariant(order.status)" />
+            </div>
         </div>
 
         <div class="text-sm text-gray-500 mb-2">
