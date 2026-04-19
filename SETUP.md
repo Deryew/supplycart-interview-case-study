@@ -111,6 +111,36 @@ php artisan test
 
 ---
 
+## Email (Mailpit)
+
+The app uses [Mailpit](https://mailpit.axllent.org/) to capture outgoing emails locally (e.g. email verification, password reset). No emails are actually sent — they are caught and viewable in a web UI.
+
+### Local Development
+
+Install and run Mailpit:
+
+```bash
+# macOS
+brew install mailpit
+mailpit
+```
+
+Mailpit will listen on SMTP port `1025` and serve a web UI at `http://localhost:8025`.
+
+The default `.env` is already configured for Mailpit:
+
+```
+MAIL_MAILER=smtp
+MAIL_HOST=127.0.0.1
+MAIL_PORT=1025
+```
+
+### Docker
+
+Mailpit is included in the Docker setup. Access the inbox at `http://localhost:8025` after running `docker compose up`.
+
+---
+
 ## Switching to MySQL (Optional)
 
 Update `.env`:

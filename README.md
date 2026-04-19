@@ -94,6 +94,35 @@ P/S: If you think there is a better way for us to assess your technical skills, 
 
 ---
 
+## Screenshots
+
+### Product Listing
+Browse and filter products by brand, category, or search.
+
+![Product Listing](screenshots/products.png)
+
+### Shopping Cart
+Review items, adjust quantities, and place an order.
+
+![Shopping Cart](screenshots/cart.png)
+
+### Stripe Checkout
+Secure payment via Stripe hosted checkout page.
+
+![Stripe Checkout](screenshots/checkout.png)
+
+### Order History
+View past orders with payment status badges.
+
+![Order History](screenshots/order.png)
+
+### Mailpit (Email Testing)
+All outgoing emails (verification, password reset) are captured locally.
+
+![Mailpit Inbox](screenshots/mailpit.png)
+
+---
+
 ## Usage
 
 ### Login Credentials
@@ -118,6 +147,18 @@ You can also register a new account via the registration page.
 ### User-Specific Pricing
 
 The VIP user sees lower prices on 8 randomly selected products (15% discount). Compare by logging in as `vip@supplycart.my` vs `user@supplycart.my` to see the difference.
+
+### Activity Log
+
+User actions (login, logout, add to cart, place order) are automatically logged to the `activity_logs` table via event listeners. To view the logs:
+
+```bash
+# Docker
+docker compose exec app php artisan tinker --execute="echo json_encode(App\Models\ActivityLog::latest()->take(10)->get()->toArray(), JSON_PRETTY_PRINT);"
+
+# Local
+php artisan tinker --execute="echo json_encode(App\Models\ActivityLog::latest()->take(10)->get()->toArray(), JSON_PRETTY_PRINT);"
+```
 
 ## Documentation
 
