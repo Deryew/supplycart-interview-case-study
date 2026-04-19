@@ -32,10 +32,7 @@ const paymentVariant = (status) => {
     >
         <div class="flex items-center justify-between mb-3">
             <span class="text-sm font-semibold text-gray-900">{{ order.orderNumber }}</span>
-            <div class="flex gap-1">
-                <Badge :value="order.paymentStatus" :variant="paymentVariant(order.paymentStatus)" />
-                <Badge :value="order.status" :variant="statusVariant(order.status)" />
-            </div>
+            <Badge :value="order.paymentStatus" :variant="paymentVariant(order.paymentStatus)" />
         </div>
 
         <div class="text-sm text-gray-500 mb-2">

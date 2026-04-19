@@ -46,7 +46,7 @@ const payForm = useForm({});
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
                     Order {{ order.orderNumber }}
                 </h2>
-                <Badge :value="order.status" :variant="statusVariant(order.status)" />
+                <Badge :value="order.paymentStatus" :variant="paymentVariant(order.paymentStatus)" />
             </div>
         </template>
 
