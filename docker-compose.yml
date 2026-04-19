@@ -16,12 +16,26 @@ services:
       QUEUE_CONNECTION: database
       CACHE_STORE: database
       LOG_CHANNEL: stderr
+      MAIL_MAILER: smtp
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+      MAIL_FROM_ADDRESS: "hello@supplycart.my"
+      MAIL_FROM_NAME: "SupplyCart"
       STRIPE_KEY: "${STRIPE_KEY:-}"
       STRIPE_SECRET: "${STRIPE_SECRET:-}"
       STRIPE_WEBHOOK_SECRET: "${STRIPE_WEBHOOK_SECRET:-}"
     volumes:
       - sqlite_data:/var/www/html/database
       - storage_logs:/var/www/html/storage/logs
+    depends_on:
+      - mailpit
+    restart: unless-stopped
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "8025:8025"
+      - "1025:1025"
     restart: unless-stopped
 
 volumes:
