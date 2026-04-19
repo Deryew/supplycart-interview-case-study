@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -60,6 +61,8 @@ class CartService
 
             $cartItem->load('product');
 
+            Cache::forget("cart_count:{$user->id}");
+
             ProductAddedToCart::dispatch($user, $cartItem);
 
             return $cartItem;
@@ -70,12 +73,18 @@ class CartService
     {
         $cartItem->update(['quantity' => $quantity]);
 
+        Cache::forget("cart_count:{$cartItem->cart->user_id}");
+
         return $cartItem->load('product');
     }
 
     public function removeItem(CartItem $cartItem): void
     {
+        $userId = $cartItem->cart->user_id;
+
         $cartItem->delete();
+
+        Cache::forget("cart_count:{$userId}");
     }
 
     public function clearCart(User $user): void
@@ -85,5 +94,7 @@ class CartService
         if ($cart) {
             $cart->cartItems()->delete();
         }
+
+        Cache::forget("cart_count:{$user->id}");
     }
 }

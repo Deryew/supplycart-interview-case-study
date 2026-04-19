@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\UserPrice;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Stripe\Checkout\Session as StripeSession;
@@ -74,6 +75,8 @@ class OrderService
 
             // Deactivate cart
             $cart->update(['is_active' => false]);
+
+            Cache::forget("cart_count:{$user->id}");
 
             $order->load('orderItems');
 

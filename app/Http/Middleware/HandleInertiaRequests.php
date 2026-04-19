@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -39,10 +40,14 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn () => $request->session()->get('error'),
             ],
             'cartItemCount' => fn () => $request->user()
-                ? \App\Models\CartItem::whereHas('cart', fn ($q) => $q
-                    ->where('user_id', $request->user()->id)
-                    ->where('is_active', true)
-                )->sum('quantity')
+                ? (int) Cache::remember(
+                    "cart_count:{$request->user()->id}",
+                    60,
+                    fn () => \App\Models\CartItem::whereHas('cart', fn ($q) => $q
+                        ->where('user_id', $request->user()->id)
+                        ->where('is_active', true)
+                    )->sum('quantity')
+                )
                 : 0,
         ];
     }
