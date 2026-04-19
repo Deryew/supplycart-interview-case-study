@@ -20,6 +20,7 @@ class OrderService
             $cart = Cart::with('cartItems.product')
                 ->where('user_id', $user->id)
                 ->active()
+                ->lockForUpdate()
                 ->first();
 
             if (!$cart || $cart->cartItems->isEmpty()) {

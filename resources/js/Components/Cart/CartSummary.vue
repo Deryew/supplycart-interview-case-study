@@ -13,11 +13,12 @@ const notes = ref('');
 const processing = ref(false);
 
 function placeOrder() {
+    if (processing.value) return;
     processing.value = true;
     router.post(route('orders.store'), {
         notes: notes.value || null,
     }, {
-        onFinish: () => { processing.value = false; },
+        onError: () => { processing.value = false; },
     });
 }
 </script>
