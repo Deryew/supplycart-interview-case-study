@@ -25,7 +25,8 @@ function increment() {
         <button
             @click="decrement"
             :disabled="modelValue <= min"
-            class="px-3 py-1 text-gray-600 hover:bg-gray-100 disabled:opacity-30 rounded-l-lg"
+            aria-label="Decrease quantity"
+            class="min-w-[2.75rem] min-h-[2.75rem] flex items-center justify-center text-gray-600 hover:bg-gray-100 disabled:opacity-30 rounded-l-lg transition-colors"
         >
             -
         </button>
@@ -35,7 +36,8 @@ function increment() {
         <button
             @click="increment"
             :disabled="modelValue >= max"
-            class="px-3 py-1 text-gray-600 hover:bg-gray-100 disabled:opacity-30 rounded-r-lg"
+            aria-label="Increase quantity"
+            class="min-w-[2.75rem] min-h-[2.75rem] flex items-center justify-center text-gray-600 hover:bg-gray-100 disabled:opacity-30 rounded-r-lg transition-colors"
         >
             +
         </button>

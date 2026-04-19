@@ -28,7 +28,7 @@ const paymentVariant = (status) => {
 <template>
     <Link
         :href="route('orders.show', order.id)"
-        class="block rounded-xl border border-gray-200 bg-white p-5 hover:shadow-md transition-shadow"
+        class="block cursor-pointer rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition-shadow"
     >
         <div class="flex items-center justify-between mb-3">
             <span class="text-sm font-semibold text-gray-900">{{ order.orderNumber }}</span>

@@ -29,7 +29,7 @@ function addToCart() {
 </script>
 
 <template>
-    <div class="group flex flex-col rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+    <div class="group flex flex-col rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow cursor-default">
         <!-- Image placeholder -->
         <div class="relative aspect-square w-full overflow-hidden rounded-t-xl bg-gray-100 flex items-center justify-center">
             <img
@@ -38,7 +38,7 @@ function addToCart() {
                 :alt="product.name"
                 class="h-full w-full object-cover"
             />
-            <svg v-else class="h-16 w-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg v-else aria-hidden="true" class="h-16 w-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                     d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>

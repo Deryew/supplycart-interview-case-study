@@ -24,7 +24,7 @@ function onQuantityChange(qty) {
                 :alt="item.product?.name"
                 class="h-full w-full object-cover rounded-lg"
             />
-            <svg v-else class="h-8 w-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg v-else aria-hidden="true" class="h-8 w-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                     d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
@@ -57,9 +57,10 @@ function onQuantityChange(qty) {
         <!-- Remove -->
         <button
             @click="cart.removeItem(item.id)"
-            class="text-gray-400 hover:text-red-500 transition-colors"
+            aria-label="Remove item"
+            class="p-2 text-gray-400 hover:text-red-500 transition-colors"
         >
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="h-5 w-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
         </button>
