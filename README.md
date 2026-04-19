@@ -91,3 +91,52 @@ We look forward to reviewing your implementation and discussing your approach du
 ---
 
 P/S: If you think there is a better way for us to assess your technical skills, feel free to suggest. We are constantly looking to improve our interview process.
+
+---
+
+## Usage
+
+### Login Credentials
+
+| Email | Password | Description |
+|---|---|---|
+| `admin@supplycart.my` | `password` | Admin user |
+| `vip@supplycart.my` | `password` | VIP customer — sees discounted prices on selected products (15% off) |
+| `user@supplycart.my` | `password` | Regular user — sees standard prices |
+
+You can also register a new account via the registration page.
+
+### Core Flow
+
+1. **Login** — Use any of the credentials above, or register a new account
+2. **Browse Products** — Filter by brand or category using the sidebar
+3. **Add to Cart** — Click the "Add to Cart" button on any product, adjust quantity as needed
+4. **Place Order** — Go to the cart page, review items, and click "Place Order"
+5. **Pay** — You'll be redirected to Stripe Checkout (use test card `4242 4242 4242 4242`, any future expiry, any CVC)
+6. **Order History** — View past orders and their payment status from the orders page
+
+### User-Specific Pricing
+
+The VIP user sees lower prices on 8 randomly selected products (15% discount). Compare by logging in as `vip@supplycart.my` vs `user@supplycart.my` to see the difference.
+
+## Documentation
+
+- [SETUP.md](SETUP.md) — Installation and setup instructions (local or Docker)
+- [API.md](API.md) — Route documentation, request/response shapes, and validation rules
+
+## Architecture
+
+- **Service Layer** — Business logic in `app/Services/` (OrderService, CartService, ProductService, ActivityLogService)
+- **Event-Driven Logging** — Activity log via Laravel events/listeners (login, logout, add to cart, place order)
+- **Inertia.js** — Server-side routing with Vue 3 frontend, no separate API
+- **Monetary Values** — Stored as integers (cents) to avoid floating point issues
+- **User-Specific Pricing** — Per-user product prices via `user_prices` table with COALESCE fallback
+- **Stripe Checkout** — Hosted payment page with webhook for payment confirmation
+- **Pessimistic Locking** — Prevents duplicate order creation from race conditions
+
+## Assumptions
+
+- Products do not have images (placeholder icons used)
+- Single currency (MYR) throughout
+- Order fulfillment status is tracked in the database but hidden from UI — designed for future logistics integration
+- SQLite is used for simplicity; migrations are database-agnostic and work with MySQL/PostgreSQL

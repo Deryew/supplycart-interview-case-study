@@ -1,0 +1,127 @@
+# Setup Instructions
+
+## Option 1: Docker (Recommended)
+
+The only prerequisite is [Docker](https://www.docker.com/products/docker-desktop/).
+
+```bash
+# Clone the repository
+git clone https://github.com/Deryew/supplycart-interview-case-study.git
+cd supplycart-interview-case-study
+
+# Build and start the application
+docker compose up --build -d
+
+# Seed the database
+docker compose exec app php artisan db:seed --force
+```
+
+Visit `http://localhost:8080` to access the application.
+
+### Stripe Payment (Optional)
+
+To enable Stripe Checkout, pass your test keys when starting:
+
+```bash
+STRIPE_KEY=pk_test_... STRIPE_SECRET=sk_test_... docker compose up --build -d
+```
+
+### Useful Commands
+
+```bash
+# View logs
+docker compose logs -f
+
+# Run tests
+docker compose exec app php artisan test
+
+# Run artisan commands
+docker compose exec app php artisan tinker
+
+# Stop the application
+docker compose down
+
+# Stop and remove all data
+docker compose down -v
+```
+
+---
+
+## Option 2: Local Development
+
+### Prerequisites
+
+- PHP 8.4+
+- Composer
+- Node.js 18+
+- npm
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/Deryew/supplycart-interview-case-study.git
+cd supplycart-interview-case-study
+
+# Install dependencies
+composer install
+npm install
+
+# Environment setup
+cp .env.example .env
+php artisan key:generate
+
+# Database (SQLite by default — no setup needed)
+touch database/database.sqlite
+php artisan migrate --seed
+
+# Build frontend assets
+npm run build
+
+# Start the application
+php artisan serve
+```
+
+Visit `http://localhost:8000` to access the application.
+
+For development with hot reload, run in a separate terminal:
+
+```bash
+npm run dev
+```
+
+### Stripe Payment (Optional)
+
+Add your test keys to `.env`:
+
+```
+STRIPE_KEY=pk_test_...
+STRIPE_SECRET=sk_test_...
+```
+
+Use test card `4242 4242 4242 4242` with any future expiry and CVC.
+
+### Running Tests
+
+```bash
+php artisan test
+```
+
+65 feature tests covering authentication, cart, orders, payments, and products.
+
+---
+
+## Switching to MySQL (Optional)
+
+Update `.env`:
+
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=supplycart
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Then run `php artisan migrate --seed`.
